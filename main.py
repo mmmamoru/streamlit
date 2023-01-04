@@ -66,9 +66,9 @@ def main():
     # 'あなたの好きな数字は、', option, 'です。'
 
 
-    if st.checkbox('Show image'):
-        img = Image.open('sample.png')
-        st.image(img, caption='sample', use_column_width=True)
+#     if st.checkbox('Show image'):
+#         img = Image.open('sample.png')
+#         st.image(img, caption='sample', use_column_width=True)
 
     # st.write('Display Image')
     # img = Image.open('sample.png')
