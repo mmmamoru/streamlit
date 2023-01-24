@@ -1,120 +1,82 @@
-# main.py
-import streamlit as st
+# streamlit run app.py
+
 import numpy as np
 import pandas as pd
-from PIL import Image
-import time
+import altair as alt
+import streamlit as st
 
-def main():
-    st.title("title! 超入門")
-    st.write(("Hello World!"))
-
-    st.write('プログレスバーの表示')
-    'Start!!'
-
-    latest_iteration = st.empty()
-    bar = st.progress(0)
-
-    for i in range(100):
-        latest_iteration.text(f'Iteration {i+1}')
-        bar.progress(i + 1)
-        time.sleep(0.1)
-
-    'Done!!'
+import sqlite3 
+import hashlib
 
 
-    left_column, right_column = st.columns(2)
+# ----------------------------------------------------------------------
 
-    button = left_column.button('右カラムに文字を表示')
-    if button:
-        right_column.write('ここは右カラム')
+# st.title('W一時表示サイト')
 
-    expander1 = st.expander('問い合わせ1')
-    expander1.write('問い合わせ1内容を書く')
-    expander2 = st.expander('問い合わせ2')
-    expander2.write('問い合わせ2内容を書く')
-    expander3 = st.expander('問い合わせ3')
-    expander3.write('問い合わせ3内容を書く')
+a = st.text_input('パスワード入力', '')
 
+if a == 'mmm':
 
-    # text = st.text_input('あなたの趣味を教えてください')
-    # condition = st.slider('あなたの今の調子は？', 0, 100, 50)
+    df_f = pd.read_json('w_forsave.json').T
 
-    # st.write('あなたの趣味: ', text)
-    # st.write('あなたの調子は', condition)
+    def page1():
+        st.title("SS")
+        df_s = df_f[df_f['category'] == '主日の御言葉'][['query', 'date', 'category', 'body']].sort_values('date')
+        st.dataframe(df_s, width=1000, height=700)
 
 
-    # st.sidebar.write('display image')
+    def page2():
+        st.title("WS")
+        df_w = df_f[df_f['category'] == '水曜日の御言葉'][['query', 'date', 'category', 'body']].sort_values('date')
+        st.dataframe(df_w, width=1000, height=700)
 
-    # text = st.sidebar.text_input('あなたの趣味を教えてください')
-    # condition = st.sidebar.slider('あなたの今の調子は？', 0, 100, 50)
+    def page3():
+        st.title("General_revelation")
+        df_gr = df_f[df_f['category'] == '一般の啓示'][['query', 'date', 'category', 'body']].sort_values('date')
+        st.dataframe(df_gr, width=1000, height=700)
 
-    # st.write('あなたの趣味: ', text)
-    # st.write('あなたの調子は', condition)
+    def page4():
+        st.title("Dawn_proverb")
+        df_dp = df_f[df_f['category'] == '明け方の箴言'][['query', 'date', 'category', 'body']].sort_values('date')
+        st.dataframe(df_dp, width=1000, height=700)
 
+    def page5():
+        st.title("Dawn")
+        st.write("""
+        ## 
+        """)
+        df_d = df_f[df_f['category'] == '明け方または朝の御言葉'][['query', 'date', 'category', 'body']].sort_values('date')
+        st.dataframe(df_d, width=1000, height=700)
 
-    # text = st.text_input('あなたの趣味を教えてください')
-    # condition = st.slider('あなたの今の調子は？', 0, 100, 50)
-    # st.write('あなたの趣味: ', text)
-    # st.write('あなたの調子は', condition)
+    pages = dict(
+        page1="SS",
+        page2="WS",
+        page3="General_revelation",
+        page4="Dawn_proverb",
+        page5="Dawn"
+    )
 
+    page_id = st.sidebar.selectbox( # st.sidebar.*でサイドバーに表示する
+        "ページ名",
+        ["page1", "page2", "page3", "page4", "page5"],
+        format_func=lambda page_id: pages[page_id], # 描画する項目を日本語に変換
+    )
 
-    # option = st.selectbox(
-    #     'あなたがすこな数字を教えてください, ',
-    #     list(range(1,11))
-    # )
-    # 'あなたの好きな数字は、', option, 'です。'
-
-
-#     if st.checkbox('Show image'):
-#         img = Image.open('sample.png')
-#         st.image(img, caption='sample', use_column_width=True)
-
-    # st.write('Display Image')
-    # img = Image.open('sample.png')
-    # st.image(img, caption='sample', use_column_width=True)
-
-    # df = pd.DataFrame(
-    #     np.random.rand(100,2)/[50, 50] + [35.69, 139.70],
-    #     columns=['lat', 'lon'] 
-    # )
-    # st.map(df)
-
-    # st.bar_chart(df)
-    # st.area_chart(df)
-    # st.line_chart(df)
-
-
-
-    # df = pd.DataFrame({
-    #     '1列目': [1,2,3,4],
-    #     '2列目': [10,20,30,40]
-    # })
-
-    # st.dataframe(df.style.highlight_max(axis=0))
-    # st.dataframe(df.style.highlight_max(axis=0))
-    # st.table(df.style.highlight_max(axis=0))
-    # st.dataframe(df.style.highlight_max(axis=0), width=100, height=100)
-    # st.write(df)
+    if page_id == "page1":
+        page1()
+    if page_id == "page2":
+        page2()
+    if page_id == "page3":
+        page3()
+    if page_id == "page4":
+        page4()
+    if page_id == "page5":
+        page5()
 
 
+# st.write("""
+# ### Danw_revelation
+# """)
+# df_dr = df_f[df_f['category'] == '明け方の啓示'][['query', 'date', 'category', 'body']].sort_values('date')
+# df_dr
 
-    # """
-    # # 章
-    # ## 節
-    # ### 項
-
-    # ```python
-    # import streamlit as st
-    # import numpy as np
-    # import pandas as pd
-    # ```
-
-    # """
-
-
-
-
-if __name__ == "__main__":
-    main()
-    
